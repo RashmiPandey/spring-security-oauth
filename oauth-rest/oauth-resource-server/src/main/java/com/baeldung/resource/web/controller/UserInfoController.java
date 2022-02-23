@@ -22,5 +22,9 @@ public class UserInfoController {
 		claimVerifier.verify(principal.getClaims());
 		return Collections.singletonMap("user_name", principal.getClaimAsString("preferred_username"));
 	}
-
+	
+	@GetMapping("/superuser")
+    public String superuser() {
+        return "Hello superuser!";
+    }
 }

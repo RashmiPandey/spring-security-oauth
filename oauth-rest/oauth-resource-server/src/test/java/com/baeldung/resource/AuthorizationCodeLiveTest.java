@@ -39,13 +39,29 @@ public class AuthorizationCodeLiveTest {
 				.get(RESOURCE_SERVER + "/user/info");
 		assertEquals(200, userResponse.getStatusCode());
 	}
-
+	
 	@Test
 	public void givenUser_whenUseUserClient_claimValidateInvalid() {
 		final String accessToken = obtainAccessTokenWithAuthorizationCode("john@test.com", "123");
 		final Response userResponse = RestAssured.given().header("Authorization", "Bearer " + accessToken)
 				.get(RESOURCE_SERVER + "/user/info");
 		assertEquals(500, userResponse.getStatusCode());
+	}
+	
+	@Test
+	public void givenUser_whenScopeIsSUPERUSER() {
+		final String accessToken = obtainAccessTokenWithAuthorizationCode("test@bealdung.com", "Pass@123");
+		final Response userResponse = RestAssured.given().header("Authorization", "Bearer " + accessToken)
+				.get(RESOURCE_SERVER + "/superuser");
+		assertEquals(200, userResponse.getStatusCode());
+	}
+	
+	@Test
+	public void givenUser_whenScopeIsNotSUPERUSER() {
+		final String accessToken = obtainAccessTokenWithAuthorizationCode("test@bealdung.com", "Pass@123");
+		final Response userResponse = RestAssured.given().header("Authorization", "Bearer " + accessToken)
+				.get(RESOURCE_SERVER + "/superuser");
+		assertEquals(403, userResponse.getStatusCode());
 	}
 
 	private String obtainAccessTokenWithAuthorizationCode(String username, String password) {
